@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>چت بات حرفه‌ای</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .chat-container {
+            width: 100%;
+            max-width: 900px;
+            height: 85vh;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* هدر */
+        .chat-header {
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .chat-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .chat-info h2 {
+            font-weight: 700;
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+        
+        .chat-info p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        /* بخش پیام‌ها */
+        .chat-messages {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            position: relative;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease-out;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bot-message {
+            align-self: flex-start;
+            background: white;
+            color: #1e293b;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .message-sender {
+            font-weight: 600;
+        }
+        
+        .message-time {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .user-message .message-time {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .bot-message .message-time {
+            color: #64748b;
+        }
+        
+        /* بخش ورودی */
+        .chat-input-container {
+            padding: 20px 30px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+        
+        #msg {
+            width: 100%;
+            padding: 16px 20px;
+            padding-right: 50px;
+            border: 2px solid #e2e8f0;
+            border-radius: 50px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+        
+        #msg:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+        
+        #sendBtn {
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        #sendBtn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+        }
+        
+        #sendBtn:active {
+            transform: translateY(-1px);
+        }
+        
+        /* اسکرول بار زیبا */
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        /* رسپانسیو */
+        @media (max-width: 768px) {
+            .chat-container {
+                height: 90vh;
+                border-radius: 15px;
+            }
+            
+            .chat-header {
+                padding: 15px 20px;
+            }
+            
+            .chat-info h2 {
+                font-size: 18px;
+            }
+            
+            .chat-info p {
+                font-size: 12px;
+            }
+            
+            .chat-messages {
+                padding: 15px;
+            }
+            
+            .message {
+                max-width: 85%;
+                padding: 12px 16px;
+            }
+            
+            .chat-input-container {
+                padding: 15px 20px;
+            }
+            
+            #msg {
+                padding: 14px 16px;
+                padding-right: 45px;
+            }
+            
+            #sendBtn {
+                width: 55px;
+                height: 55px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <!-- هدر چت -->
+        <div class="chat-header">
+            <div class="chat-title">
+                <div class="chat-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="chat-info">
+                    <h2>چت بات هوشمند</h2>
+                    <p>همراه هوشمند شما برای پاسخ به سوالات</p>
+                </div>
+            </div>
+            <div class="status">
+                <div class="status-dot"></div>
+                <span>آنلاین</span>
+            </div>
+        </div>
+        
+        <!-- بخش پیام‌ها -->
+        <div class="chat-messages" id="chat">
+            <div class="message bot-message">
+                <div class="message-header">
+                    <span class="message-sender">ربات</span>
+                    <span class="message-time" id="currentTime">هم اکنون</span>
+                </div>
+                <div class="message-content">سلام! چطور می‌توانم به شما کمک کنم؟</div>
+            </div>
+        </div>
+        
+        <!-- بخش ورودی -->
+        <div class="chat-input-container">
+            <div class="input-wrapper">
+                <input type="text" id="msg" placeholder="پیام خود را اینجا بنویسید..." autocomplete="off">
+                <div class="input-icon">
+                    <i class="fas fa-edit"></i>
+                </div>
+            </div>
+            <button id="sendBtn" onclick="send()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // تابع برای دریافت زمان فعلی
+        function getCurrentTime() {
+            const now = new Date();
+            return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        }
+        
+        // تابع اصلی ارسال پیام (همان منطق اصلی شما)
+        async function send() {
+            const msgInput = document.getElementById('msg');
+            const msg = msgInput.value.trim();
+            const chatContainer = document.getElementById('chat');
+            
+            if (msg === "") return;
+            
+            // افزودن پیام کاربر
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user-message';
+            userMessage.innerHTML = `
+                <div class="message-header">
+                    <span class="message-sender">شما</span>
+                    <span class="message-time">${getCurrentTime()}</span>
+                </div>
+                <div class="message-content">${msg}</div>
+            `;
+            chatContainer.appendChild(userMessage);
+            
+            // پاک کردن فیلد ورودی
+            msgInput.value = '';
+            
+            // اسکرول به پایین
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            try {
+                // ارسال درخواست به سرور (همان منطق اصلی شما)
+                const res = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: msg, customer_id: 'web'})
+                });
+                
+                const data = await res.json();
+                
+                // افزودن پاسخ ربات
+                const botMessage = document.createElement('div');
+                botMessage.className = 'message bot-message';
+                botMessage.innerHTML = `
+                    <div class="message-header">
+                        <span class="message-sender">ربات</span>
+                        <span class="message-time">${getCurrentTime()}</span>
+                    </div>
+                    <div class="message-content">${data.answer}</div>
+                `;
+                chatContainer.appendChild(botMessage);
+                
+            } catch (error) {
+                // نمایش خطا
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'message bot-message';
+                errorMessage.innerHTML = `
+                    <div class="message-header">
+                        <span class="message-sender">خطا</span>
+                        <span class="message-time">${getCurrentTime()}</span>
+                    </div>
+                    <div class="message-content" style="color: #ef4444;">ارتباط با سرور برقرار نشد. لطفا دوباره تلاش کنید.</div>
+                `;
+                chatContainer.appendChild(errorMessage);
+            }
+            
+            // اسکرول به پایین
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        // فعال کردن ارسال با کلید Enter
+        document.getElementById('msg').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                send();
+            }
+        });
+        
+        // به‌روزرسانی زمان اولیه
+        document.getElementById('currentTime').textContent = getCurrentTime();
+        
+        // فوکوس خودکار روی فیلد ورودی
+        document.getElementById('msg').focus();
+    </script>
+</body>
+</html>
